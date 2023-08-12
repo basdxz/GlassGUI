@@ -1,9 +1,12 @@
 package com.ventooth.glassgui;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.FileUtils;
@@ -16,8 +19,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
+@Environment(EnvType.CLIENT)
 public final class GlassGUI implements ClientModInitializer {
     private static final Logger LOG = LoggerFactory.getLogger("Glass GUI");
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting()
+                                                      .disableHtmlEscaping()
+                                                      .create();
 
     private static Config config;
 
@@ -26,12 +34,10 @@ public final class GlassGUI implements ClientModInitializer {
         val configPath = FabricLoader.getInstance().getConfigDir();
         val configFile = configPath.resolve("glass_gui.json").toFile();
 
-        val gson = new GsonBuilder().setPrettyPrinting().create();
-
         try {
             val json = FileUtils.readFileToString(configFile, StandardCharsets.UTF_8);
             try {
-                config = gson.fromJson(json, Config.class);
+                config = GSON.fromJson(json, Config.class);
                 if (config.translucentTextures == null)
                     throw new IllegalStateException(
                             "Config does not contain \"translucentTextures\": [\"texture_path\"] block");
@@ -47,7 +53,7 @@ public final class GlassGUI implements ClientModInitializer {
             {
                 final String json;
                 try {
-                    json = gson.toJson(config);
+                    json = GSON.toJson(config);
                 } catch (RuntimeException re) {
                     LOG.error("Failed converting config to JSON: %s".formatted(configFile), e);
                     break config_saving;
@@ -61,6 +67,10 @@ public final class GlassGUI implements ClientModInitializer {
         }
         LOG.info("Translucent textures:");
         config.translucentTextures().forEach(LOG::info);
+    }
+
+    public static Gson gson() {
+        return GSON;
     }
 
     public static boolean isTextureTranslucent(Identifier texture) {

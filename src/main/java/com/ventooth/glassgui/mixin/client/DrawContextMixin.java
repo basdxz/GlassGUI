@@ -2,6 +2,8 @@ package com.ventooth.glassgui.mixin.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.ventooth.glassgui.GlassGUI;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.util.Identifier;
@@ -16,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import static org.spongepowered.asm.mixin.injection.At.Shift;
 
 @Mixin(DrawContext.class)
+@Environment(EnvType.CLIENT)
 public abstract class DrawContextMixin {
     @Unique
     private boolean enabledBlend;
