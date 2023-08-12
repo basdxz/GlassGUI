@@ -3,7 +3,7 @@ plugins {
 	id 'maven-publish'
 }
 
-version = "SNAPSHOT"
+version = "1.0.0-rc1"
 group = "com.ventooth"
 
 base {

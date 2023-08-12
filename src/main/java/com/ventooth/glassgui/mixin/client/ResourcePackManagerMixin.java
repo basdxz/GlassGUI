@@ -31,6 +31,5 @@ public abstract class ResourcePackManagerMixin {
     private void registerLoader(CallbackInfo info) {
         providers = new HashSet<>(providers);
         providers.add(glassGUIResourcePackProvider());
-        providers = ImmutableSet.copyOf(providers);
     }
 }
